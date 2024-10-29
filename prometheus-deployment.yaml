@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  prometheus-server
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  prometheus-server
+    spec:
+      containers:
+        - name:  prometheus
+          image:  prom/prometheus
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/prometheus
+      
+      volume:
+        - name: config-volume
+          configMap:
+            name: prometheus-server-conf
+            defaultMode: 420
+       
